@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define FOR_ARDUINO
+
 //
 // Lights stuff
 //
@@ -46,15 +48,15 @@ unsigned int table[4];
 
 // This is a table of x,y coords to numbers
 unsigned int pos2NumTable[][3] = {
-    {0,2, 0x001},
-    {1,2, 0x002},
-    {2,2, 0x004},
-    {0,1, 0x008},
-    {1,1, 0x010},
-    {2,1, 0x020},
-    {0,0, 0x040},
-    {1,0, 0x080},
-    {2,0, 0x100},
+  {0, 2, 0x001},
+  {1, 2, 0x002},
+  {2, 2, 0x004},
+  {0, 1, 0x008},
+  {1, 1, 0x010},
+  {2, 1, 0x020},
+  {0, 0, 0x040},
+  {1, 0, 0x080},
+  {2, 0, 0x100},
 };
 
 //
@@ -166,12 +168,12 @@ void setup() {
 }
 
 unsigned int getValForKeys(int x, int y) {
-    for (int row = 0; row < 9; ++row) {
-        if (pos2NumTable[row][0] == x && pos2NumTable[row][1] == y)
-            return pos2NumTable[row][2];
-    }
+  for (int row = 0; row < 9; ++row) {
+    if (pos2NumTable[row][0] == x && pos2NumTable[row][1] == y)
+      return pos2NumTable[row][2];
+  }
 
-    return 0x000;
+  return 0x000;
 }
 
 void setTable(int x, int y, int z) {
@@ -187,7 +189,7 @@ void setTable(int x, int y, int z) {
       table[TOP] |= getValForKeys(x, y);
       break;
   };
-  
+
   // And set the brightness
   table[3] = 0x02ff;
 }
@@ -213,11 +215,14 @@ void loop() {
   snakePos[SNAKE_HEAD][Z] = newHeadCoords.z;
 
   // Now print our current snake position
+#ifndef FOR_ARDUINO
   printf("\t---------\n");
+#endif
   for (int x = 0; x < SNAKE_SIZE; ++x) {
     setTable(snakePos[x][X], snakePos[x][Y], snakePos[x][Z]);
-    printf("\t(%d, %d, %d)\n", snakePos[x][X], snakePos[x][Y],
-           snakePos[x][Z]);
+#ifndef FOR_ARDUINO
+    printf("\t(%d, %d, %d)\n", snakePos[x][X], snakePos[x][Y], snakePos[x][Z]);
+#endif
   }
 
   //
@@ -243,16 +248,16 @@ void loop() {
         analogWrite(5, (0xff - (table[3] & 0xff)));
       else if (c % 3 == 2)
         analogWrite(6, (0xff - (table[3] & 0xff)));
-      delay(5);
+      delay(2);
       digitalWrite(3, 1);
       digitalWrite(5, 1);
       digitalWrite(6, 1);
     }
-    delay(5);
-
-    // And reset the table
-    table[0] = 0x000;
-    table[1] = 0x000;
-    table[2] = 0x000;
+    delay(1);
   }
+
+  // And reset the table
+  table[0] = 0x000;
+  table[1] = 0x000;
+  table[2] = 0x000;
 }
