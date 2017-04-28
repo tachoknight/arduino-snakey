@@ -5,3 +5,4 @@
  
  In case you happened to make one of these before RadioShack went to the great bit bucket in the sky, here's another project you can run on your Arduino for fun.
  
+ There's a [video on YouTube](https://youtu.be/hYTm8Bw1imo) that shows this project in motion.
